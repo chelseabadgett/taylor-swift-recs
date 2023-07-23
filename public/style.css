@@ -1,0 +1,26 @@
+button {
+  font-size: large;
+}
+
+.mainButton {
+  margin-bottom: 1em;
+  align-self: center;
+}
+
+.headerDiv {
+  background-image: url('../imgs/img-header.png');
+  background-position: 150px;
+  height: 150px;
+}
+
+.mainDiv {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 0;
+}
+
+.mainDiv div {
+  list-style: none;
+  flex: 0 0 30%;
+  padding: 1em;
+}
