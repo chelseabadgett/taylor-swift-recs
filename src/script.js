@@ -10,7 +10,6 @@ let SPOTIFY_ACCESS_TOKEN
 const getUserDisplayName = async () => {
     
     const profile = await SpotifyApi.getUserProfile(SPOTIFY_ACCESS_TOKEN)
-    console.log(profile)
     return profile.display_name
 }
 
@@ -18,7 +17,13 @@ const getUsersTopTrackIds = async () => {
   const topTracks = await SpotifyApi.getTopTracks(SPOTIFY_ACCESS_TOKEN, {
     limit: 4
   })
-  console.log(`toptracks`, topTracks)
+  const displayedTracks = topTracks.items.map(item => {
+      return {
+          artistName: item.artists[0].name,
+          songName: item.name
+      }
+  })
+  console.log(`toptracks`, displayedTracks)
 
   return topTracks.items.map(item => item.id)
 }
@@ -28,8 +33,6 @@ const getTopTaylorRecommendations = async topTrackIds => {
     SPOTIFY_ACCESS_TOKEN,
     topTrackIds
   )
-  console.log(`RECS:`)
-  console.log(recommendations)
 
   recommendations = recommendations.tracks.map(item => {
     return {
@@ -59,8 +62,6 @@ const getFinalTaylorRecommendations = async topTrackIds => {
 
     requestCount++
   }
-
-  console.log(`justTaylor`, uniqueRecommendationsById)
 
   return Object.values(uniqueRecommendationsById).map(item => item.externalUrl)
 }
@@ -108,13 +109,6 @@ const run = async () => {
   await updateRecommendationHtml(externalUrls)
 
 }
-
-//console.log(htmlList)
-//const currentUrl = await SpotifyApi.getEmbed(allRecommendationInfoOrdered[0].url)
-//   const currentHTML = Object.values(currentUrl)[0]
-//   console.log(currentHTML)
-
-//console.log(allRecommendationInfoOrdered)
 
 run()
 
