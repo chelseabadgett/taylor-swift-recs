@@ -3,11 +3,16 @@ import SpotifyApi from './spotifyApi'
 const params = new URLSearchParams(window.location.search)
 
 const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID
-const SPOTIFY_AUTHORIZATION_CODE = params.get('code')
+let SPOTIFY_AUTHORIZATION_CODE = params.get('code')
 
 let SPOTIFY_ACCESS_TOKEN
 
 let currentRecommendationMetadata = {}
+
+if (!SPOTIFY_AUTHORIZATION_CODE) {
+  localStorage.removeItem("spotify_access_token")
+  SpotifyApi.redirectToAuthCodeFlow(SPOTIFY_CLIENT_ID)
+}
 
 const getUserDetails = async () => {
   const profile = await SpotifyApi.getUserProfile(SPOTIFY_ACCESS_TOKEN)

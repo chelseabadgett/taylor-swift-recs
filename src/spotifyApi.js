@@ -1,5 +1,6 @@
 const SPOTIFY_REDIRECT_URL = import.meta.env.VITE_SPOTIFY_REDIRECT_URL || import.meta.env.VITE_VERCEL_URL
 
+
 async function getUserProfile (code) {
   const result = await fetch(`https://api.spotify.com/v1/me`, {
     headers: { Authorization: `Bearer ${code}` }
