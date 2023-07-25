@@ -97,6 +97,16 @@ const updateHeaderHtml = displayName => {
   }
 }
 
+const updateLinkDiv = async (playlistId) => {
+  const link = document.querySelector(`.link a`)
+  const linkDiv = document.querySelector(`.link`)
+  const linkText = document.querySelector(`.link p`)
+  link.href = `https://open.spotify.com/playlist/${playlistId}`
+  link.innerHTML = `https://open.spotify.com/playlist/${playlistId} <svg xmlns="http://www.w3.org/2000/svg" height="0.75em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#A9BD93}</style><path d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"/></svg>`
+  //linkDiv.innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><style>svg{fill:#f0f2f5}</style><path d="M432,320H400a16,16,0,0,0-16,16V448H64V128H208a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0h-128c-21.37,0-32.05,25.91-17,41l35.73,35.73L135,320.37a24,24,0,0,0,0,34L157.67,377a24,24,0,0,0,34,0L435.28,133.32,471,169c15,15,41,4.5,41-17V24A24,24,0,0,0,488,0Z"/></svg>`
+  linkDiv.style.opacity = `1`;
+}
+
 const createPlaylist = async playlist => {
   const playlistResponse = await SpotifyApi.createPlaylist(
     SPOTIFY_ACCESS_TOKEN,
@@ -109,7 +119,10 @@ const createPlaylist = async playlist => {
     playlistResponse.id,
     playlist.uris
   )
+
+  updateLinkDiv(playlistResponse.id)
 }
+
 
 const addButtonEventListener = () => {
   const playListButton = document.querySelector(`.glow-on-hover`)
