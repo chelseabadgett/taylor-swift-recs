@@ -64,6 +64,51 @@ async function getEmbed (url) {
   return result.json()
 }
 
+async function createPlaylist (code, userId, displayName) {
+  let date = new Date().toLocaleDateString()
+
+  console.log(userId)
+  const data = 
+  {
+    "name": `Taylor Swift Recommender for: ${displayName}`,
+    "description": `Your Top Taylor Recommendations as of ${date}`,
+    "public":true
+  }
+  const result = await fetch(`https://api.spotify.com/v1/users/${userId}/playlists`,
+  {
+    method: "POST",
+    headers: { 
+      "Authorization": `Bearer ${code}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  console.log(result)
+
+  return result.json()
+}
+
+async function addItemsToPlaylist (code, playlistId, uris) {
+
+  const data = 
+    {
+      "uris": uris
+    }
+
+  const result = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`,
+  {
+    method: "POST",
+    headers: { 
+      "Authorization": `Bearer ${code}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+
+  return result.json()
+}
+
 export async function redirectToAuthCodeFlow (clientId) {
     const verifier = generateCodeVerifier(128)
     const challenge = await generateCodeChallenge(verifier)
@@ -73,8 +118,10 @@ export async function redirectToAuthCodeFlow (clientId) {
     const params = new URLSearchParams()
     params.append('client_id', clientId)
     params.append('response_type', 'code')
+
+    params.append('scope', 'user-read-private user-read-email user-top-read playlist-modify-public playlist-modify-private')
     params.append('redirect_uri', SPOTIFY_REDIRECT_URL)
-    params.append('scope', 'user-read-private user-read-email user-top-read')
+
     params.append('code_challenge_method', 'S256')
     params.append('code_challenge', challenge)
   
@@ -130,6 +177,8 @@ export async function redirectToAuthCodeFlow (clientId) {
 
 export default {
   getUserProfile,
+  createPlaylist,
+  addItemsToPlaylist,
   getTopTracks,
   getTracks,
   getArtists,
