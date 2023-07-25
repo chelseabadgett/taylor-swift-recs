@@ -126,12 +126,11 @@ export async function redirectToAuthCodeFlow (clientId) {
     params.append('code_challenge', challenge)
   
     document.location = `https://accounts.spotify.com/authorize?${params.toString()}`
-    console.log(
-      `Sample::::https://accounts.spotify.com/authorize?${params.toString()}`
-    )
+
   }
   
   export async function getAccessToken (clientId, code) {
+    
     const verifier = localStorage.getItem('verifier')
   
     const params = new URLSearchParams()
