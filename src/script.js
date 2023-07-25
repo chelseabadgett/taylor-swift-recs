@@ -2,7 +2,7 @@ import SpotifyApi from './spotifyApi'
 
 const params = new URLSearchParams(window.location.search)
 
-const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID
+const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID || import.meta.env.SPOTIFY_CLIENT_ID
 const SPOTIFY_AUTHORIZATION_CODE = params.get('code')
 
 let SPOTIFY_ACCESS_TOKEN
