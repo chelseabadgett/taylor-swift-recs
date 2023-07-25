@@ -32,7 +32,7 @@ div.main {
 footer {
   display: flex;
   padding-top: .5em;
-  justify-content: space-around;
+  justify-content: space-between;
   font-family: 'Poppins', sans-serif;
   border-width: thick;
   border-color:#ff0000
@@ -44,7 +44,7 @@ footer {
   font-size: 1vw;
   border-radius: 10px;
   height: 100%;
-  width: 75%;
+  width: 90%;
   display: flex;
   align-items: center;
   opacity: 0;
