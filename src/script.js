@@ -7,10 +7,13 @@ const SPOTIFY_AUTHORIZATION_CODE = params.get('code')
 
 let SPOTIFY_ACCESS_TOKEN
 
-const getUserDisplayName = async () => {
+const getUserDetails = async () => {
     
     const profile = await SpotifyApi.getUserProfile(SPOTIFY_ACCESS_TOKEN)
-    return profile.display_name
+    return {
+        displayName: profile.display_name,
+        userId: profile.id
+    }
 }
 
 const getUsersTopTrackIds = async () => {
@@ -39,7 +42,8 @@ const getTopTaylorRecommendations = async topTrackIds => {
       artistName: item.artists[0].name,
       externalUrl: item.external_urls.spotify,
       songName: item.name,
-      id: item.id
+      id: item.id,
+      uri: item.uri
     }
   })
 
@@ -49,12 +53,14 @@ const getTopTaylorRecommendations = async topTrackIds => {
 const getFinalTaylorRecommendations = async topTrackIds => {
   const uniqueRecommendationsById = {}
   let requestCount = 0
+  const numberOfRecommendations = 6
 
   while (
-    Object.keys(uniqueRecommendationsById).length < 6 &&
+    Object.keys(uniqueRecommendationsById).length < numberOfRecommendations &&
     requestCount <= 5
   ) {
     let taylorRecommendations = await getTopTaylorRecommendations(topTrackIds)
+    console.log(taylorRecommendations)
 
     taylorRecommendations.forEach(item => {
       uniqueRecommendationsById[item.id] = item
@@ -62,8 +68,9 @@ const getFinalTaylorRecommendations = async topTrackIds => {
 
     requestCount++
   }
+  console.log(uniqueRecommendationsById)
 
-  return Object.values(uniqueRecommendationsById).map(item => item.externalUrl)
+  return Object.values(uniqueRecommendationsById).slice(0, numberOfRecommendations)
 }
 
 const updateRecommendationHtml = async (externalUrls) => {
@@ -87,7 +94,7 @@ const updateHeaderHtml = (displayName) => {
     }
 }
 
-const run = async () => {
+const runRecommenderAndUpdateUI = async () => {
   if (!SPOTIFY_AUTHORIZATION_CODE) {
     SpotifyApi.redirectToAuthCodeFlow(SPOTIFY_CLIENT_ID)
     console.log(`i got here`)
@@ -102,13 +109,44 @@ const run = async () => {
     }
   }
 
-  const displayName = await getUserDisplayName()
+  const userDetailsObject = await getUserDetails()
+  const displayName = userDetailsObject.displayName
+  const userId = userDetailsObject.userId
+  console.log(`userId`, userId)
   updateHeaderHtml(displayName)
   let topTrackIds = await getUsersTopTrackIds()
-  let externalUrls =  await getFinalTaylorRecommendations(topTrackIds)
+  let taylorRecommendations =  await getFinalTaylorRecommendations(topTrackIds)
+  let topTaylorUris = taylorRecommendations.map(item => item.uri)
+  let externalUrls = taylorRecommendations.map(item => item.externalUrl)
   await updateRecommendationHtml(externalUrls)
+
+  return {
+      uris: topTaylorUris,
+      displayName: displayName,
+      id: userId
+  }
 
 }
 
-run()
+const createPlaylist = async (appDetails) => {
 
+    const playlistResponse = await SpotifyApi.createPlaylist(SPOTIFY_ACCESS_TOKEN, appDetails.id, appDetails.displayName)
+    let playlistId = playlistResponse.id
+    console.log(`playlistId`,playlistId)
+    let uris = appDetails.uris
+    let updatedPlaylistResponse = await SpotifyApi.addItemsToPlaylist(SPOTIFY_ACCESS_TOKEN, playlistId, uris)
+    console.log(updatedPlaylistResponse)
+
+
+}
+
+let appDetails = await runRecommenderAndUpdateUI()
+
+const playListButton = document.querySelector(`.glow-on-hover`);
+
+playListButton.addEventListener(`click`, async element => {
+    console.log(`insidePlaylistbuttonEventListener`)
+    createPlaylist(appDetails);
+})
+
+    
