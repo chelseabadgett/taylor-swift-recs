@@ -14,6 +14,10 @@ header {
   color: #ffffff;
 
 }
+.button {
+  display: flex;
+  align-items: center; 
+}
 
 div.main {
   display: flex;
@@ -30,6 +34,8 @@ footer {
   padding-top: .5em;
   justify-content: space-around;
   font-family: 'Poppins', sans-serif;
+  border-width: thick;
+  border-color:#ff0000
 }
 
 .link {
@@ -44,7 +50,6 @@ footer {
   opacity: 0;
   padding-left: 1em;
   word-break: break-all;
-  
 }
 
 a {
@@ -55,12 +60,6 @@ a {
   list-style: none;
   flex: 0 0 30%;
 }
-
-/* .button {
-  display: flex;
-  justify-content: center;
-  margin: 2em;
-} */
 
 .glow-on-hover {
   width: 80%;
@@ -75,9 +74,6 @@ a {
   border-radius: 10px;
   font-size: 1.5vw;
   white-space: normal;
-  /* overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; */
 
 }
 
